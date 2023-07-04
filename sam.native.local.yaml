@@ -1,0 +1,40 @@
+  AWSTemplateFormatVersion: '2010-09-09'
+  Transform: AWS::Serverless-2016-10-31
+  Description: AWS Serverless Quarkus HTTP - quarkus-rest-lambda-1.0.0-SNAPSHOT
+  Globals:
+    Api:
+      EndpointConfiguration: REGIONAL
+      BinaryMediaTypes:
+        - "*/*"
+
+  Resources:
+    QuarkusRestLambdaNative:
+      Type: AWS::Serverless::Function
+      Properties:
+        Handler: not.used.in.provided.runtimei
+        Runtime: provided.al2
+        CodeUri: function.zip
+        MemorySize: 128
+        Policies: AWSLambdaBasicExecutionRole
+        Timeout: 30
+        Architectures:
+          - arm64
+        Environment:
+          Variables:
+            DISABLE_SIGNAL_HANDLERS: true
+            db_url: jdbc:postgresql://host.docker.internal:3001/UsersDb
+            db_username: postgres
+            db_password: password
+        Events:
+          GetResource:
+            Type: Api
+            Properties:
+              Path: /{proxy+}
+              Method: any
+
+  Outputs:
+    QuarkusRestLambdaNativeApi:
+      Description: URL for application
+      Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/'
+      Export:
+        Name: QuarkusRestLambdaNativeApi

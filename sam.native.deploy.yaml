@@ -1,0 +1,24 @@
+  AWSTemplateFormatVersion: '2010-09-09'
+  Transform: AWS::Serverless-2016-10-31
+  Description: AWS Serverless Quarkus HTTP - quarkus-rest-lambda-1.0.0-SNAPSHOT
+
+  Resources:
+    QuarkusRestLambdaNative:
+      Type: AWS::Serverless::Function
+      Properties:
+        Handler: not.used.in.provided.runtimei
+        Runtime: provided
+        CodeUri: function.zip
+        MemorySize: 1024
+        Policies:
+          - AWSLambdaBasicExecutionRole
+          - S3FullAccessPolicy:
+              BucketName: enter the name of your bucket
+        Timeout: 30
+        FunctionName: nativeLambda
+        Environment:
+          Variables:
+            DISABLE_SIGNAL_HANDLERS: true
+            db_url: jdbc:postgresql://<your rds endpoint here>:5432/usersDb
+            db_username: rds master username
+            db_password: rds password
